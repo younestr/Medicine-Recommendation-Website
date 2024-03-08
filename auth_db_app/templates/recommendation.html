@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Recommendation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Medicine Recommendation</h1>
+        <h2>For {{ reason }}</h2>
+        <div class="medicine-list">
+            {% for med_type, meds in recommended_medicines.items() %}
+            <div class="med-type">
+                <img src="{{ url_for('static', filename='images/' + med_type.lower() + '.png') }}" alt="{{ med_type }}">
+                <h3>{{ med_type }}</h3>
+                <ul>
+                    {% for med in meds %}
+                    <li>{{ med }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

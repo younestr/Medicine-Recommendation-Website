@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Recommendation Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Medicine Recommendation Dashboard</h1>
+        <form action="{{ url_for('recommend') }}" method="POST">
+            <label for="reason">Select your disease:</label>
+            <select name="reason" id="reason" size="5"> <!-- Adjust the size attribute as needed -->
+                {% for reason in reasons %}
+                <option value="{{ reason }}">{{ reason }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Get Medicine</button>
+        </form>
+        {% if medicine %}
+        <div class="medicine-result">
+            <h2>Recommended Medicine</h2>
+            <ul>
+                {% for med in medicine %}
+                <li>{{ med }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

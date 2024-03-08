@@ -1,0 +1,39 @@
+/* static/styles.css */
+
+body {
+    background-color: #360909; /* Background color for the entire page */
+}
+
+.container {
+    width: 50%; /* Adjust the width of the container */
+    margin: auto; /* Center the container horizontally */
+    margin-top: 50px; /* Add some top margin for spacing */
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff; /* Background color for the container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+}
+
+select {
+    width: 100%; /* Make the dropdown box full width */
+    height: 100px; /* Adjust the height of the dropdown box */
+    padding: 10px; /* Add padding */
+    margin-bottom: 10px; /* Add bottom margin for spacing */
+    border: 1px solid #ccc; /* Add border */
+    border-radius: 5px; /* Add border radius */
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+}
+
+input[type="submit"] {
+    width: 100%; /* Make the submit button full width */
+    padding: 10px; /* Add padding */
+    margin-top: 10px; /* Add top margin for spacing */
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
