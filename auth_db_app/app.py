@@ -7,13 +7,15 @@ from PIL import Image
 from collections import defaultdict
 from urllib.parse import quote_plus
 
-
 # Initialize the Flask application
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # Load the medicine dataset
 medicine_df = pd.read_excel('datasets/Medicine_Description.xlsx')
+
+# Load the company ratings dataset
+ratings_df = pd.read_excel('datasets/Ratings.xlsx', index_col='Short-form')
 
 # Connect to MySQL database
 db = mysql.connector.connect(
@@ -81,7 +83,7 @@ def dashboard():
     reasons = ['Acne', 'Adhd', 'Allergies', 'Alzheimer', 'Amoebiasis', 'Anaemia', 'Angina', 'Anxiety', 'Appetite', 'Arrhythmiasis', 'Arthritis', 'Cleanser', 'Constipation', 'Contraception', 'Dandruff', 'Depression', 'Diabetes', 'Diarrhoea', 'Digestion', 'Fever', 'Fungal', 'General', 'Glaucoma', 'Gout', 'Haematopoiesis', 'Haemorrhoid', 'Hyperpigmentation', 'Hypertension', 'Hyperthyroidism', 'Hypnosis', 'Hypotension', 'Hypothyroidism', 'Infection', 'Leprosy', 'Malarial', 'Migraine', 'Mydriasis', 'Osteoporosis', 'Pain', 'Parkinson', 'Psychosis', 'Pyrexia', 'Scabies', 'Schizophrenia', 'Smoking', 'Supplement', 'Thrombolysis', 'Vaccines', 'Vertigo', 'Viral', 'Wound']
     return render_template('dashboard.html', reasons=reasons)   
 
-
+# Function to resize images
 def resize_images(image_dir, target_size=(256, 256)):
     for filename in os.listdir(image_dir):
         if filename.endswith('.png'):
@@ -95,11 +97,9 @@ def resize_images(image_dir, target_size=(256, 256)):
             # Save the resized image, overwrite the original
             img_resized.save(image_path)
 
-
 # Define the directory where the images are stored
 image_dir = os.path.join(app.root_path, 'static', 'images')
 resize_images(image_dir, target_size=(256, 256))
-
 
 @app.route('/recommend', methods=['POST'])
 def recommend():
@@ -119,10 +119,10 @@ def recommend():
         'Other': os.path.join(image_dir, 'other.png')
     }
 
-    # Initialize a dictionary to hold recommended medicines with purchase links
-    recommended_medicines_with_links = {med_type: [] for med_type in med_icons.keys()}
+    # Initialize a dictionary to hold recommended medicines with purchase links and ratings
+    recommended_medicines_with_info = {med_type: [] for med_type in med_icons.keys()}
 
-    # Generate purchase links for each recommended medicine
+    # Generate purchase links and ratings for each recommended medicine
     for med in recommended_medicines:
         # Determine the type of medicine
         med_type = classify_med_type(med)
@@ -130,13 +130,23 @@ def recommend():
         # Generate the purchase link for the medicine
         purchase_link = f"https://pharmeasy.in/search/all?name={quote_plus(med)}"
         
-        # Add the medicine and its purchase link to the dictionary
-        recommended_medicines_with_links[med_type].append((med, purchase_link))
+        # Get the company name from the medicine name
+        company_name = med.split()[0]  # Assuming the company name is the first word in the medicine name
+        
+        # Get the rating for the medicine
+        if company_name in ratings_df.index:
+            rating = ratings_df.loc[company_name, 'Rating']
+        else:
+            rating = None
+        
+        # Add the medicine, its purchase link, and rating to the dictionary
+        recommended_medicines_with_info[med_type].append((med, purchase_link, rating))
 
-    return render_template('recommendation.html', reason=reason, recommended_medicines=recommended_medicines_with_links, med_icons=med_icons)
+    return render_template('recommendation.html', reason=reason, recommended_medicines=recommended_medicines_with_info, med_icons=med_icons)
 
+
+# Function to classify medicine type based on its name
 def classify_med_type(med):
-    # Classify medicine type based on its name
     med = med.lower()
     if 'tablet' in med:
         return 'Tablet'
@@ -156,6 +166,7 @@ def classify_med_type(med):
         return 'Cream'
     else:
         return 'Other'
+
 
 # Run the Flask application
 if __name__ == '__main__':
