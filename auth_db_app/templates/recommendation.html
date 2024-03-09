@@ -5,24 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medicine Recommendation</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .container {
+            margin: 0 auto;
+            max-width: 800px;
+            padding: 20px;
+        }
+        .search-form {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .search-input {
+            width: 300px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: width 0.3s ease-in-out;
+        }
+        .search-input:focus {
+            width: 400px;
+            outline: none;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .search-button:hover {
+            background-color: #45a049;
+        }
+        .medicine-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .medicine-list li {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Medicine Recommendation</h1>
         <h2>For {{ reason }}</h2>
+        
+        <!-- Search form -->
+        <form class="search-form" onsubmit="event.preventDefault();">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search for a medicine..." onkeyup="searchMedicine()">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+        
         <div class="medicine-list">
-            {% for med_type, meds_with_links in recommended_medicines.items() %}
+            {% for med_type, meds_with_info in recommended_medicines.items() %}
             <div class="med-type">
                 <img src="{{ url_for('static', filename='images/' + med_type.lower() + '.png') }}" alt="{{ med_type }}">
                 <h3>{{ med_type }}</h3>
-                <ul>
-                    {% for med, link in meds_with_links %}
-                    <li>{{ med }} <a href="{{ link }}" target="_blank">Purchase</a></li>
+                <ul id="{{ med_type }}">
+                    {% for med, link, rating in meds_with_info %}
+                    <li>{{ med }} <a href="{{ link }}" target="_blank">Purchase</a> {% if rating %} - Rating: {{ rating }}{% endif %}</li>
                     {% endfor %}
                 </ul>
             </div>
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        function searchMedicine() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            ul = document.getElementsByClassName('medicine-list')[0];
+            li = ul.getElementsByTagName('li');
+            for (i = 0; i < li.length; i++) {
+                a = li[i];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = '';
+                } else {
+                    li[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
 </body>
 </html>
