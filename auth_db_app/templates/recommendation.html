@@ -11,13 +11,13 @@
         <h1>Medicine Recommendation</h1>
         <h2>For {{ reason }}</h2>
         <div class="medicine-list">
-            {% for med_type, meds in recommended_medicines.items() %}
+            {% for med_type, meds_with_links in recommended_medicines.items() %}
             <div class="med-type">
                 <img src="{{ url_for('static', filename='images/' + med_type.lower() + '.png') }}" alt="{{ med_type }}">
                 <h3>{{ med_type }}</h3>
                 <ul>
-                    {% for med in meds %}
-                    <li>{{ med }}</li>
+                    {% for med, link in meds_with_links %}
+                    <li>{{ med }} <a href="{{ link }}" target="_blank">Purchase</a></li>
                     {% endfor %}
                 </ul>
             </div>
