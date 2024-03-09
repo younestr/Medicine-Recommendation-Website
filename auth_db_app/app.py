@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from PIL import Image
 from collections import defaultdict
+from urllib.parse import quote_plus
 
 
 # Initialize the Flask application
@@ -99,7 +100,7 @@ def resize_images(image_dir, target_size=(256, 256)):
 image_dir = os.path.join(app.root_path, 'static', 'images')
 resize_images(image_dir, target_size=(256, 256))
 
-## Route for medicine recommendation
+
 @app.route('/recommend', methods=['POST'])
 def recommend():
     reason = request.form['reason']
@@ -107,24 +108,54 @@ def recommend():
     
     # Define the file paths for each medicine type icon
     med_icons = {
-        'Tablets': os.path.join(image_dir, 'tablet.png'),
-        'Injections': os.path.join(image_dir, 'injection.png'),
-        'Capsules': os.path.join(image_dir, 'capsule.png'),
-        'Gels': os.path.join(image_dir, 'gel.png'),
-        'Solutions': os.path.join(image_dir, 'solution.png'),
-        'Other': os.path.join(image_dir, 'other.png')  # Add the path for 'other' type icon
+        'Tablet': os.path.join(image_dir, 'tablet.png'),
+        'Injection': os.path.join(image_dir, 'injection.png'),
+        'Capsule': os.path.join(image_dir, 'capsule.png'),
+        'Gel': os.path.join(image_dir, 'gel.png'),
+        'Solution': os.path.join(image_dir, 'solution.png'),
+        'Ointment': os.path.join(image_dir, 'ointment.png'),
+        'Powder': os.path.join(image_dir, 'powder.png'),
+        'Cream': os.path.join(image_dir, 'cream.png'),
+        'Other': os.path.join(image_dir, 'other.png')
     }
 
-    # Convert the NumPy array to a dictionary
-    med_types = ['Tablet', 'Injection', 'Capsule', 'Gel', 'Solution', 'Other']
-    recommended_medicines_dict = {med_types[i]: recommended_medicines.tolist() for i in range(len(med_types))}
-    
-    return render_template('recommendation.html', reason=reason, recommended_medicines=recommended_medicines_dict, med_icons=med_icons)
+    # Initialize a dictionary to hold recommended medicines with purchase links
+    recommended_medicines_with_links = {med_type: [] for med_type in med_icons.keys()}
 
+    # Generate purchase links for each recommended medicine
+    for med in recommended_medicines:
+        # Determine the type of medicine
+        med_type = classify_med_type(med)
+        
+        # Generate the purchase link for the medicine
+        purchase_link = f"https://pharmeasy.in/search/all?name={quote_plus(med)}"
+        
+        # Add the medicine and its purchase link to the dictionary
+        recommended_medicines_with_links[med_type].append((med, purchase_link))
 
+    return render_template('recommendation.html', reason=reason, recommended_medicines=recommended_medicines_with_links, med_icons=med_icons)
 
-
-
+def classify_med_type(med):
+    # Classify medicine type based on its name
+    med = med.lower()
+    if 'tablet' in med:
+        return 'Tablet'
+    elif 'injection' in med:
+        return 'Injection'
+    elif 'capsule' in med:
+        return 'Capsule'
+    elif 'gel' in med:
+        return 'Gel'
+    elif 'solution' in med:
+        return 'Solution'
+    elif 'ointment' in med:
+        return 'Ointment'
+    elif 'powder' in med:
+        return 'Powder'
+    elif 'cream' in med:
+        return 'Cream'
+    else:
+        return 'Other'
 
 # Run the Flask application
 if __name__ == '__main__':
