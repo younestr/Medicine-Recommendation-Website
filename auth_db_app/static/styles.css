@@ -1,22 +1,34 @@
 /* static/styles.css */
 
 body {
-    background-color: #360909; /* Background color for the entire page */
+    background-color: #360909; /* Fallback background color */
+    background-image: url('../static/images/renaissancepharma.jpg'); /* Background image */
+    background-size: cover; /* Cover the entire page */
+    background-repeat: no-repeat; /* No repeat for the background image */
+    height: 100vh; /* Set height to viewport height */
+    margin: 0; /* Remove default margin */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
     width: 50%; /* Adjust the width of the container */
-    margin: auto; /* Center the container horizontally */
-    margin-top: 50px; /* Add some top margin for spacing */
     padding: 20px;
     border-radius: 10px;
-    background-color: #fff; /* Background color for the container */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+    text-align: center;
 }
 
-select {
-    width: 100%; /* Make the dropdown box full width */
-    height: 100px; /* Adjust the height of the dropdown box */
+.container h2 {
+    color: #333; /* Set heading color */
+}
+
+.container input[type="text"],
+.container input[type="password"],
+.container input[type="submit"] {
+    width: 100%; /* Make the input fields and submit button full width */
     padding: 10px; /* Add padding */
     margin-bottom: 10px; /* Add bottom margin for spacing */
     border: 1px solid #ccc; /* Add border */
@@ -24,16 +36,39 @@ select {
     box-sizing: border-box; /* Ensure padding and border are included in width */
 }
 
-input[type="submit"] {
-    width: 100%; /* Make the submit button full width */
-    padding: 10px; /* Add padding */
-    margin-top: 10px; /* Add top margin for spacing */
-    background-color: #4CAF50; /* Green */
-    color: white;
-    border: none;
-    cursor: pointer;
+.container input[type="submit"] {
+    background-color: #4CAF50; /* Green background color */
+    color: white; /* White text color */
+    border: none; /* No border */
+    cursor: pointer; /* Change cursor on hover */
 }
 
-input[type="submit"]:hover {
+.container input[type="submit"]:hover {
     background-color: #45a049; /* Darker green on hover */
+}
+
+.container p {
+    margin-top: 15px; /* Add top margin for spacing */
+}
+
+.container a {
+    color: #007bff; /* Set link color */
+    text-decoration: none; /* Remove underline from links */
+}
+
+.container a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+/* Ensure vertical scrolling for recommended medicine list */
+.medicine-list {
+    max-height: 400px; /* Set maximum height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Add tablet icon and tablet display */
+.med-type img {
+    width: 50px; /* Adjust tablet icon width */
+    height: 50px; /* Adjust tablet icon height */
+    margin-bottom: 10px; /* Add bottom margin for spacing */
 }
